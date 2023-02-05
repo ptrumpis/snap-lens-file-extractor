@@ -9,6 +9,11 @@ https://github.com/ptrumpis/snap-lens-file-format/blob/main/README.md
 ```
 
 ## Usage
+Visit the Github page of this repo
+
+https://ptrumpis.github.io/snap-lens-file-extractor/
+
+
 - Upload a Lens file and have it automatically converted to a zip archive for download
 - Its using WebAssembly to decompress the file, it should work in modern browsers
 
