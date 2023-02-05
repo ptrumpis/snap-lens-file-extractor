@@ -1,20 +1,112 @@
-<h3>File Parser</h3>
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <title>Snap Lens to Zip Converter</title>
+</head>
+<body>
+  <h3>Snap Lens to Zip Converter</h3>
 
-<div class="file-analyzer">
-  <div class="file-select">
-    <label for="inputFile">Upload file:</label>
-    <input type="file" id="inputFile" name="inputFile" />
-  </div>
-  
-  <br />
+  <div class="file-analyzer">
+    <div class="file-select">
+      <label for="inputFile">Upload Snap Lens:</label>
+      <input type="file" id="inputFile" name="inputFile" />
+    </div>
 
-  <div class="event-log">
-    <label for="eventLog">Event log:</label>
-    <textarea readonly class="event-log-contents" id="eventLog" cols="80" rows="15">
-	</textarea>
+    <br />
+
+    <div class="event-log">
+      <label for="eventLog">Event log:</label>
+      <textarea readonly class="event-log-contents" id="eventLog" cols="80" rows="15">
+    </textarea>
+    </div>
+
+    <div class="file-data"> </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/gh/ptrumpis/zstd.js/dist/zstd.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.js"></script>
+  <script src="./script.js"></script>
+  <script>
+  const fileInput = document.querySelector('input[type="file"]');
+  const data = document.querySelector('.file-data');
+  const eventLog = document.querySelector('.event-log-contents');
+
+  const reader = new FileReader();
+  const parser = new MyFileParser();
   
-  <div class="file-data">
-  </div>
-</div>
-  
+  function handleEvent(event) {
+    // file reader event log
+    eventLog.textContent += `${event.type}: ${event.loaded} bytes transferred\n`;
+  }
+
+  function addListeners(reader) {
+    // log all file reader events (not required debug only)
+    reader.addEventListener('loadstart', handleEvent);
+    reader.addEventListener('load', handleEvent);
+    reader.addEventListener('loadend', handleEvent);
+    reader.addEventListener('progress', handleEvent);
+    reader.addEventListener('error', handleEvent);
+    reader.addEventListener('abort', handleEvent);
+  }
+
+  function formatBytes(bytes, decimals = 2) {
+    if (!+bytes) return '0 Bytes'
+
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+  }
+
+  function handleSelectedFile(e) {
+    const selectedFile = fileInput.files[0];
+    eventLog.textContent = '';
+
+    if (selectedFile) {
+      eventLog.textContent = 'New file selection\n';
+      eventLog.textContent += `File Type: ${selectedFile.type}\n`;
+
+      // for debuging only
+      addListeners(reader);
+
+      // read in file data as byte array
+      reader.onload = async function(e) {
+        const zstd = await ZSTD();
+
+        parser.parseArrayBuffer(reader.result, zstd);
+      
+        eventLog.textContent += `Found ${parser.files.length} files in archive\n`;
+
+        let zip = new JSZip();
+
+        parser.files.forEach(function (file, i) {
+          let sizeInfo = formatBytes(file.rawData.length);
+          eventLog.textContent += `File ${i}: ${file.fileName} with ${sizeInfo}\n`;
+
+          if (file.rawData.length > 0) {
+            zip.file(
+              file.fileName.replace(/^\/+/, ''),
+              file.rawData,
+              {createFolders: true}
+            );
+          }
+        });
+
+        let zipFileName = selectedFile.name.substr(0, selectedFile.name.lastIndexOf('.')) + '.zip';
+        zip.generateAsync({type:"blob"}).then(function (blob) {
+          saveAs(blob, zipFileName);
+        });
+      }
+      reader.readAsArrayBuffer(selectedFile);
+    }
+  }
+
+  // listen to file input changes
+  fileInput.addEventListener('change', handleSelectedFile);
+  </script>
+</body>
+</html>
