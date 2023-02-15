@@ -1,5 +1,5 @@
 # Snap Lens File Extractor, Parser, Unpacker and Zip Converter
-Web Browser based JavaScript Online File Extractor, Parser, Unpacker and Zip Converter for the Snap Camera / Snapchat Lens File Format (lens.lns / *.lns)
+Web Browser based JavaScript Online File Extractor, Parser, Unpacker and Zip File Converter for the Snap Camera / Snapchat Lens File Format (lens.lns / *.lns)
 
 ## Introduction
 All details about the Snap Lens file format can be found here
@@ -26,3 +26,5 @@ Right now it serves more as proof-of-concept. It is fully functional without kno
 
 ## Goals
 This repo will slowly convert into a functional JS library which you can import in your own project.
+
+© [Patrick Trumpis](https://github.com/ptrumpis)

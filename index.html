@@ -1,124 +1,194 @@
-<!DOCTYPE html>
-<html lang='en'>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Web Browser based JavaScript Online File Extractor, Parser, Unpacker and Zip File Converter for the Snap Camera / Snapchat Lens File Format (lens.lns / *.lns)">
+    <meta name="keywords" content="Snap Camera,Snapcamera,Snapchat,Snap,Snap Lens,Snap Lenses,Lens,Lenses,lens.lns,extractor,parser,unpacker,zip,converter">
+    <meta name="author" content="Patrick Trumpis">
+    <meta name="generator" content="Patrick Trumpis">
+    <title>Snap Lens File Extractor</title>
+    <link rel="canonical" href="https://ptrumpis.github.io/snap-lens-file-extractor/">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body class="text-center text-bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Tenth navbar example">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse justify-content-md-center" id="navbarsExample08">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="https://ptrumpis.github.io/snap-lens-file-extractor/">Snap Lens File Extractor</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="https://github.com/ptrumpis/snap-lens-file-extractor"><i class="bi bi-github"></i> Source Code</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Snap Camera Projects</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="https://github.com/ptrumpis/snap-lens-file-format"><i class="bi bi-github"></i> Snap Lens File Format</a></li>
+                  <li><a class="dropdown-item" href="https://github.com/ptrumpis/snap-lens-cache-import"><i class="bi bi-github"></i> Snap Lens Cache Import</a></li>
+                  <li><a class="dropdown-item" href="https://github.com/ptrumpis/snap-camera-server"><i class="bi bi-github"></i> Snap Camera Server</a></li>
+                  <li><a class="dropdown-item" href="https://github.com/ptrumpis/snap-camera-installer"><i class="bi bi-github"></i> Snap Camera Server Installer</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="cover-container w-100 h-100 p-3 mx-auto">
+        <main class="px-3">
+          <h3>Snap Lens (*.lns) to Zip Converter</h3>
+          <p class="lead">Convert your Snapchat and Snap Camera *.lns files to a zip archive for download and easy file extraction.</p>
 
-<head>
-  <meta charset='UTF-8'>
-  <title>Snap Lens to Zip Converter</title>
-</head>
+          <h5 class="mt-5">File Selection</h5>
+          <div class="container">
+            <div id="dropDiv">
+                Drag and Drop your lens.lns file to this area.<br />
+                Or select your lens.lns file
+              <input type="file" class="form-control-file mt-2" id="inputFile" name="inputFile" />
+            </div>
+          </div>
 
-<body>
-  <h3>Snap Lens to Zip Converter</h3>
+          <h5 class="mt-5">Unpacking Event Log</h5>
+          <div class="container">
+            <div class="form-group">
+              <textarea readonly class="form-control" id="eventLog" rows="8"></textarea>
+            </div>
+          </div>
+        </main>
 
-  <div class="file-analyzer">
-    <div class="file-select">
-      <label for="inputFile">Upload Snap Lens:</label>
-      <input type="file" id="inputFile" name="inputFile" />
-    </div>
-
-    <br />
-
-    <div class="event-log">
-      <label for="eventLog">Event log:</label>
-      <textarea readonly class="event-log-contents" id="eventLog" cols="80" rows="15">
-    </textarea>
-    </div>
-
-    <div class="file-data"> </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/gh/ptrumpis/zstd.js/dist/zstd.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.js"></script>
-  <script src="./script.js"></script>
-  <script>
-    const fileInput = document.querySelector('input[type="file"]');
-    const data = document.querySelector('.file-data');
-    const eventLog = document.querySelector('.event-log-contents');
-
-    const reader = new FileReader();
-    const parser = new LensFileParser();
-
-    function handleEvent(event) {
-      // file reader event log
-      eventLog.textContent += `${event.type}: ${event.loaded} bytes transferred\n`;
-    }
-
-    function addListeners(reader) {
-      // log all file reader events (not required debug only)
-      reader.addEventListener('loadstart', handleEvent);
-      reader.addEventListener('load', handleEvent);
-      reader.addEventListener('loadend', handleEvent);
-      reader.addEventListener('progress', handleEvent);
-      reader.addEventListener('error', handleEvent);
-      reader.addEventListener('abort', handleEvent);
-    }
-
-    function formatBytes(bytes, decimals = 2) {
-      if (!+bytes) return '0 Bytes'
-
-      const k = 1024
-      const dm = decimals < 0 ? 0 : decimals
-      const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-
-      const i = Math.floor(Math.log(bytes) / Math.log(k))
-
-      return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-    }
-
-    function handleSelectedFile(e) {
-      const selectedFile = fileInput.files[0];
-      eventLog.textContent = '';
-
-      if (selectedFile) {
-        eventLog.textContent = 'New file selection\n';
-        eventLog.textContent += `File Type: ${selectedFile.type}\n`;
-
-        // for debuging only
-        addListeners(reader);
-
-        // read in file data as byte array
-        reader.onload = async function (e) {
-          const zstd = await ZSTD();
-
-          parser.parseArrayBuffer(reader.result, zstd);
-
-          eventLog.textContent += `Found ${parser.files.length} files in archive\n`;
-
-          let zip = new JSZip();
-
-          parser.files.forEach(function (file, i) {
-            let sizeInfo = formatBytes(file.rawData.length);
-            eventLog.textContent += `File ${i}: ${file.fileName} with ${sizeInfo}\n`;
-
-            if (file.rawData.length > 0) {
-              zip.file(
-                file.fileName.replace(/^\/+/, ''),
-                file.rawData,
-                { createFolders: true }
-              );
-            }
-          });
-
-          let zipFileName = selectedFile.name;
-          const idx = selectedFile.name.lastIndexOf('.');
-          if (idx > 0) {
-            // change extension to .zip
-            zipFileName = selectedFile.name.substr(0, idx) + '.zip';
-          } else {
-            // file is missing an extension
-            zipFileName += '.zip';
-          }
-
-          zip.generateAsync({ type: "blob", compression: "DEFLATE", platform: "UNIX" }).then(function (blob) {
-            saveAs(blob, zipFileName);
-          });
-        }
-        reader.readAsArrayBuffer(selectedFile);
+        <footer class="mt-auto text-white-50 py-5">
+            <p>
+                This is <a href="https://github.com/ptrumpis/snap-lens-file-extractor" class="link-secondary"><i class="bi bi-github"></i> Snap Lens File Extractor</a>
+                © 2023 by <a href="https://github.com/ptrumpis" class="link-secondary">Patrick Trumpis</a>.
+            </p>
+        </footer>
+      </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ptrumpis/zstd.js/dist/zstd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.js"></script>
+    <script src="./lensparser.js"></script>
+    <script>
+      const fileInput = document.querySelector('input[type="file"]');
+      const dropDiv = document.querySelector('#dropDiv');
+      const eventLog = document.querySelector('#eventLog');
+  
+      const reader = new FileReader();
+      const parser = new LensFileParser();
+  
+      function handleEvent(event) {
+        // file reader event log
+        eventLog.textContent += `${event.type}: ${event.loaded} bytes transferred\n`;
       }
-    }
+  
+      function addListeners(reader) {
+        // log all file reader events (not required debug only)
+        reader.addEventListener('loadstart', handleEvent);
+        reader.addEventListener('load', handleEvent);
+        reader.addEventListener('loadend', handleEvent);
+        reader.addEventListener('progress', handleEvent);
+        reader.addEventListener('error', handleEvent);
+        reader.addEventListener('abort', handleEvent);
+      }
+  
+      function formatBytes(bytes, decimals = 2) {
+        if (!+bytes) return '0 Bytes'
+  
+        const k = 1024
+        const dm = decimals < 0 ? 0 : decimals
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+  
+        const i = Math.floor(Math.log(bytes) / Math.log(k))
+  
+        return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+      }
+  
+      function handleSelectedFile(file) {
+        const selectedFile = file;
+        eventLog.textContent = '';
+  
+        if (selectedFile) {
+          eventLog.textContent = 'New file selection\n';
+          eventLog.textContent += `File Type: ${selectedFile.type}\n`;
+  
+          // for debuging only
+          addListeners(reader);
+  
+          // read in file data as byte array
+          reader.onload = async function (e) {
+            const zstd = await ZSTD();
+  
+            parser.parseArrayBuffer(reader.result, zstd);
+  
+            eventLog.textContent += `Found ${parser.files.length} files in archive\n`;
+  
+            let zip = new JSZip();
+  
+            parser.files.forEach(function (file, i) {
+              let sizeInfo = formatBytes(file.rawData.length);
+              eventLog.textContent += `File ${i}: ${file.fileName} with ${sizeInfo}\n`;
+  
+              if (file.rawData.length > 0) {
+                zip.file(
+                  file.fileName.replace(/^\/+/, ''),
+                  file.rawData,
+                  { createFolders: true }
+                );
+              }
+            });
+  
+            let zipFileName = selectedFile.name;
+            const idx = selectedFile.name.lastIndexOf('.');
+            if (idx > 0) {
+              // change extension to .zip
+              zipFileName = selectedFile.name.substr(0, idx) + '.zip';
+            } else {
+              // file is missing an extension
+              zipFileName += '.zip';
+            }
+  
+            zip.generateAsync({ type: "blob", compression: "DEFLATE", platform: "UNIX" }).then(function (blob) {
+              saveAs(blob, zipFileName);
+            });
+          }
+          reader.readAsArrayBuffer(selectedFile);
+        }
+      }
 
-    // listen to file input changes
-    fileInput.addEventListener('change', handleSelectedFile);
-  </script>
-</body>
+      function dragHover(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        if (e.type === 'dragover') {
+          e.target.className = 'over';
+        } else {
+          e.target.className = '';
+        }
+      }
 
+      dropDiv.addEventListener('dragover', dragHover);
+      dropDiv.addEventListener('dragleave', dragHover);
+      dropDiv.addEventListener('drop', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        e.target.className = '';
+
+        var file = e.dataTransfer.files[0];
+        handleSelectedFile(file);
+      });
+
+      fileInput.addEventListener('change', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        var file = fileInput.files[0];
+        handleSelectedFile(file);
+      });
+    </script>
+  </body>
 </html>

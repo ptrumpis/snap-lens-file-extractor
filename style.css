@@ -1,0 +1,20 @@
+#dropDiv {
+  display: block;
+  border: 1px dashed #CCCCCC;
+  width: 100%;
+  padding: 50px;
+  text-align: center;
+  color: #CCCCCC;
+}
+
+#dropDiv.over {
+  border-color: #DE7E7E;
+  color: #DE7E7E;
+  background-color: #FFEDED;
+}
+
+#dropDiv.over {
+  border-color: #DE7E7E;
+  color: #DE7E7E;
+  background-color: #FFEDED;
+}
