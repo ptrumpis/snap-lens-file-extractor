@@ -1,30 +1,34 @@
-# Snap Lens File Extractor, Parser, Unpacker and Zip Converter
-Web Browser based JavaScript Online File Extractor, Parser, Unpacker and Zip File Converter for the Snap Camera / Snapchat Lens File Format (lens.lns / *.lns)
+# 👻 Snap Lens File Extractor
+Web Browser based JavaScript Online File Extractor, Parser, Unpacker and Zip File Converter.
 
-## Introduction
-All details about the Snap Lens file format can be found here
+Reads and unpacks the Snap Camera / Snapchat Lens File Format (lens.lns / *.lns)
+
+## ℹ️ File Format
+All details about the Snap Lens file format can be found here:
 ```
 https://github.com/ptrumpis/snap-lens-file-format/blob/main/README.md
 ```
 
-## Usage
-Visit the Github page of this repo
+## 🚀 Usage
+Visit the Github page of this repo:
 
 https://ptrumpis.github.io/snap-lens-file-extractor/
 
-- Upload a Lens file and have it automatically converted to a zip archive for download
-- Its using WebAssembly to decompress the file, it should work in modern browsers
+- Upload a Lens file and have it automatically converted to a zip archive for download.
+- Its using WebAssembly to decompress the file, it should work in all modern browsers.
 
-## Current State
-This is currently a port of my CodePen.io script located at
-```
-https://codepen.io/ptrumpis/pen/jOpQREE?editors=0010
-```
-It served as analyzing and debugging tool during the reverse engineering process of the file format.
-
-Right now it serves more as proof-of-concept. It is fully functional without known bugs.
-
-## Goals
+## 🏆 Goals
 This repo will slowly convert into a functional JS library which you can import in your own project.
 
-© [Patrick Trumpis](https://github.com/ptrumpis)
+## ❤️ Support
+If you like my work and want to support me, feel free to invite me for a virtual coffee ☕
+
+- [☕ Ko-fi](https://ko-fi.com/ptrumpis)
+- [☕ Buy me a Coffee](https://www.buymeacoffee.com/ptrumpis)
+- [☕ Liberapay](https://liberapay.com/ptrumpis/)
+
+You can also become my GitHub Sponsor
+
+---
+
+© 2023 [Patrick Trumpis](https://github.com/ptrumpis)
