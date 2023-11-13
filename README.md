@@ -3,6 +3,8 @@ Web Browser based JavaScript Online File Extractor, Parser, Unpacker and Zip Fil
 
 Reads and unpacks the Snap Camera / Snapchat Lens File Format (lens.lns / *.lns)
 
+You can use [Snap Lens Tool](https://github.com/ptrumpis/snap-lens-tool) if you want to unpack, modify and re-pack Lens files.
+
 ## ℹ️ File Format
 All details about the Snap Lens file format can be found here:
 ```
