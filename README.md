@@ -45,4 +45,4 @@ You can also become my GitHub Sponsor
 
 ---
 
-© 2023-2024 [Patrick Trumpis](https://github.com/ptrumpis)
+© 2023-2025 [Patrick Trumpis](https://github.com/ptrumpis)
