@@ -1,0 +1,39 @@
+{
+  "name": "@ptrumpis/snap-lens-file-extractor",
+  "version": "1.1.0",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "description": "File extractor, parser, unpacker for the Snap Camera / Snapchat lens *.lns file format.",
+  "keywords": [
+    "snapchat",
+    "snapcamera",
+    "snap",
+    "lens",
+    "file",
+    "extractor",
+    "parser",
+    "unpacker"
+  ],
+  "main": "src/lensparser.js",
+  "exports": {
+    ".": "./src/lensparser.js"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patrick Trumpis <ptrumpis@pm.me>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ptrumpis/snap-lens-file-extractor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ptrumpis/snap-lens-file-extractor/issues"
+  },
+  "license": "GPL-3.0",
+  "dependencies": {
+    "fzstd": "^0.1.1"
+  }
+}
