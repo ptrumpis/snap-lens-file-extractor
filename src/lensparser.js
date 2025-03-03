@@ -5,7 +5,11 @@ class LensFileParser {
         this.byteArray = undefined;
     }
 
-    async parseArrayBuffer(buffer, zstd) {
+    hasFiles() {
+        return (this.files.length > 0);
+    }
+
+    parseArrayBuffer(buffer, zstd) {
         // re-initalize
         this.meta = new LensFileMeta();
         this.files = [];
@@ -14,23 +18,28 @@ class LensFileParser {
         this._parseFileMeta(buffer);
 
         // decompress zstd block and return new Uint8Array
-        let uncompressedData = zstd.decompress(this.byteArray.slice(this.meta.offsetRecords + 8));
-    
-        for (let i=0; i<this.meta.records.length; i++) {
-            // read data from offsetStart to offsetEnd
-            let offsetStart =  this.meta.records[i].fileOffset;
-            let offsetEnd = offsetStart + this.meta.records[i].fileSize;
+        try {
+            let compressedData = this.byteArray.slice(this.meta.offsetRecords + 8);
+            let uncompressedData = zstd.decompress(compressedData);
 
-            let file = new LensFileContainer(
-                this.meta.records[i].fileName,
-                uncompressedData.slice(offsetStart, offsetEnd)
-            );
+            for (let i = 0; i < this.meta.records.length; i++) {
+                // read data from offsetStart to offsetEnd
+                let offsetStart = this.meta.records[i].fileOffset;
+                let offsetEnd = offsetStart + this.meta.records[i].fileSize;
 
-            // additional info for debuging
-            file.fileSize = this.meta.records[i].fileSize;
-            file.compressedSize = this.meta.records[i].compressedSize;
+                let file = new LensFileContainer(
+                    this.meta.records[i].fileName,
+                    uncompressedData.slice(offsetStart, offsetEnd)
+                );
 
-            this.files.push(file);
+                // additional info for debuging
+                file.fileSize = this.meta.records[i].fileSize;
+                file.compressedSize = this.meta.records[i].compressedSize;
+
+                this.files.push(file);
+            }
+        } catch (e) {
+            console.error(e);
         }
     }
 
@@ -69,11 +78,11 @@ class LensFileParser {
             // copy first 4 bytes of zstd data (magic number)
             this.meta.magicNumber = dataView.getUint32(8 + this.meta.offsetRecords, true);
 
-        } catch(e) {
+        } catch (e) {
             console.error(e);
         }
     }
-    
+
     _parseFileRecords(buffer) {
         try {
             // another helper object with all records at offset 0
@@ -82,7 +91,7 @@ class LensFileParser {
 
             // parse records for as long as file count or header size limit is reached
             // valid file records should have at least 16 static bytes and 1-n dynamic bytes
-            for (let n=0; n < this.meta.fileCount && recordOffset < (this.meta.sizeRecords+17); n++) {
+            for (let n = 0; n < this.meta.fileCount && recordOffset < (this.meta.sizeRecords + 17); n++) {
                 let record = new LensFileMetaRecord();
 
                 record.fileNameSize = dataView.getUint32(recordOffset, true);
@@ -90,11 +99,11 @@ class LensFileParser {
                 record.compressedSize = dataView.getUint32(4 + recordOffset + record.fileNameSize, true);
                 record.fileSize = dataView.getUint32(8 + recordOffset + record.fileNameSize, true);
                 record.fileOffset = dataView.getUint32(12 + recordOffset + record.fileNameSize, true);
-                
+
                 this.meta.records.push(record);
                 recordOffset += record.fileNameSize + 16;
             }
-        } catch(e) {
+        } catch (e) {
             console.error(e);
         }
     }
@@ -146,4 +155,10 @@ class LensFileContainer {
         this.fileName = fileName;
         this.rawData = rawData;
     }
+}
+
+export default LensFileParser;
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = LensFileParser;
 }
