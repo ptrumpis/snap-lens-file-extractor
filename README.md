@@ -7,26 +7,34 @@
 
 # 👻 Snap Lens File Extractor
 Web Browser based JavaScript Online File Extractor, Parser, Unpacker and Zip File Converter.  
-Reads and unpacks the Snap Camera / Snapchat Lens File Format (lens.lns / *.lns)
+Reads and unpacks the Snap Camera / Snapchat Lens File Format (lens.lns / *.lns).
+
+Now also available as npm package.
 
 ## 🚀 Usage
-Visit the Github page of this repo:
+### Online Tool
+Visit:  [👻 Snap Lens File Extractor](https://ptrumpis.github.io/snap-lens-file-extractor/)
 
-https://ptrumpis.github.io/snap-lens-file-extractor/
+Upload a Lens file and have it automatically converted to a zip archive for download.  
+Its using WebAssembly to decompress the file, it should work in all modern browsers.  
 
-- Upload a Lens file and have it automatically converted to a zip archive for download.
-- Its using WebAssembly to decompress the file, it should work in all modern browsers.
-
-## 🧰 Snap Lens Tool
-There is now a new desktop tool available if you want to **unpack, modify and re-pack** Lens files.
-
-[🖥️ Snap Lens Tool](https://github.com/ptrumpis/snap-lens-tool)
-
-## ℹ️ File Format
-All details about the Snap Lens file format can be found here:
+### npm
+```shell
+npm i @ptrumpis/snap-lens-file-extractor
 ```
-https://github.com/ptrumpis/snap-lens-file-format/blob/main/README.md
-```
+
+## ℹ️ Info
+### Dependents
+This package is a dependency of:  
+[👻 Snap Camera Server](https://github.com/ptrumpis/snap-camera-server)
+
+### Desktop Tool
+There is now a new desktop tool available if you want to **unpack, modify and re-pack** Lens files.  
+[🧰 Snap Lens Tool](https://github.com/ptrumpis/snap-lens-tool)
+
+### File Format
+All details about the Snap Lens file format can be found here:  
+[👻 Snap Lens File Format](https://ptrumpis.github.io/snap-lens-file-format/)
 
 ## ❤️ Support
 If you like my work and want to support me, feel free to invite me for a virtual coffee ☕  
