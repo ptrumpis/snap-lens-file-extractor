@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 👻 Snap Lens Tool
+    url: https://github.com/ptrumpis/snap-lens-tool
+    about: A Swiss Army Knife for Snapchat Lenses.
+  - name: 👻 Snap Lens Cache Import
+    url: https://github.com/ptrumpis/snap-lens-cache-import
+    about: Upload your crawled lenses to your own Snap Camera Server.
+  - name: 💬 Snap Camera Server Discussions
+    url: https://github.com/ptrumpis/snap-camera-server/discussions
+    about: Join Discussions and find answers to common problems.
